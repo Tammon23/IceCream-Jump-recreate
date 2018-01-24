@@ -8,7 +8,7 @@ pygame.init()
 CLOCK = pygame.time.Clock()
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Ice Cream Magnet Jump")
-FPS = 300
+FPS =  300
 
 # define some colors
 BLACK = (0, 0, 0)
@@ -49,8 +49,6 @@ font3 = pygame.font.SysFont("arial",80)
 font4 = pygame.font.SysFont("arial",25)
 font5 = pygame.font.SysFont("arial",20)
 
-#Movement varibles
-maxJumpHeight = 60
 
 #Words of wisdom
 help1 = font2.render("Instructions", True, BLACK)
@@ -64,7 +62,8 @@ help7 = font5.render("Now if you fall off of all of the platforms and end up at 
 help8 = font5.render("Enjoy!", True, BLACK)
 
 
-
+#Movement varibles
+maxJumpHeight = 120
 
 xPos = 100#int(w/2)
 yPos = h - platSize[1] + 20

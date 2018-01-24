@@ -89,7 +89,7 @@ while running:
                     jumpping = False
                     jumpCounter = 0
 
-                print("Gavity on false: ", onGround, "false:", jumpping)
+                print("for gravity on false, onground: ", onGround, "Jumppin on false:", jumpping)
                 ## Implimenting Gravity
                 if not onGround and not jumpping:
                     yPos += gravVel
@@ -114,14 +114,17 @@ while running:
                     if detectCollisions(h, xPos, yPos, playerSize[0], platform[0], platform[1], platSize[0], platSize[1], gravVel, startFloor):# x1,y1,w1,x2,y2,w2, yVel
             ##            if yPos <= h - platSize[1] + 20 and yPos + gravVel:
             ##                yPos = h - platSize[1] + 20
-                        if onFloor and not jumpping:
-                            yPos = h - platSize[1]
-                        #if  platform[1] >= yPos and platform[1] <= yPos + yVel:
+##                        if onFloor and not jumpping:
+##                            yPos = h - platSize[1] + 20
+                        onGround = True
+                        if  yPos <= h -platSize[1] + 20 and yPos + gravVel >= h - platSize[1] + 20 and startFloor:
+                            yPos = h - platSize[1] + 20
+
                         else:
                             yPos = platform[1]
-                        onGround = True
-                    else: pass
-                         #onGround = False
+                        break
+
+
                 pygame.display.flip()
 
                 if yPos > h and not startFloor:

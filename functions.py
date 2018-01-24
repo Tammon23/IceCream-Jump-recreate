@@ -12,7 +12,6 @@ def gen_start_platforms(startPlatY, platSize, screenSize, platformGap):
 
 def detectCollisions(h, x1,y1,w1,x2,y2,w2,h2, yVel, startFloor):
     global onFloor
-    global onGround
     if startFloor and y1 <= h - h2 + 20 and y1 + yVel >= h - h2 + 20:
         onFloor = True
         #onGround = True
