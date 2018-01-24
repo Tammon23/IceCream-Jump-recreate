@@ -37,7 +37,7 @@ while running:
         sMainButtonClr = sButtonClrPressed
         if pygame.mouse.get_pressed()[0]:
             gameStart = True
-            #######################################################################
+            #######################################################################  Game logic
             # ### creating the list  of values holding all of the platform's x and y location data
             initialPlatform = gen_start_platforms(150, platSize,size, 80)
             print("Number of platforms seen:",len(initialPlatform), initialPlatform )
@@ -115,7 +115,7 @@ while running:
             ##            if yPos <= h - platSize[1] + 20 and yPos + gravVel:
             ##                yPos = h - platSize[1] + 20
                         if onFloor and not jumpping:
-                            yPos = h - platSize[1] + 20
+                            yPos = h - platSize[1]
                         #if  platform[1] >= yPos and platform[1] <= yPos + yVel:
                         else:
                             yPos = platform[1]
@@ -148,7 +148,7 @@ while running:
             ##        pygame.time.wait(3000)
 
 
-                    break
+                    running = False
 
 
                 CLOCK.tick(FPS)
