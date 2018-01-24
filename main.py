@@ -78,28 +78,37 @@ while running:
                     jumpping = True
                     onGround = False
 
+
                 ##Implimenting jumpping
                 if jumpping:
                     player = playerU
                     yPos -= yVel
                     jumpCounter += 1
 
+
                 # if player is jumoping then wait until they reach their max jump height
                 if jumpCounter == maxJumpHeight:
                     jumpping = False
                     jumpCounter = 0
 
-                print("for gravity on false, onground: ", onGround, "Jumppin on false:", jumpping)
+                #print("for gravity on false, onground: ", onGround, "Jumppin on false:", jumpping, "SRT FLOOR STATE", startFloor)
+                #print("jump:", jumpping, "onfloor:", onGround, yPos, jumpCounter)
                 ## Implimenting Gravity
+
                 if not onGround and not jumpping:
-                    yPos += gravVel
+                    if not startFloor:
+                        yPos += gravVel
+                    elif startFloor:
+                        if yPos <= (h - platform[1] + 20):
+                            yPos += gravVel
+
 
                 ## if the players goes off to the left or right screen they get moved to the opposing side
                 if xPos + playerSize[0] <= 0:
                     xPos = w - 1
 
                 if xPos >= w:
-                    xPos = 0 - playerSize[0]
+                    xPos = -playerSize[0]
 
                 ## if the player goes off of the top of the screen then generate a new map, and move the player to the bottom of the screen
                 if yPos <= 0:
@@ -109,49 +118,64 @@ while running:
                     trackY = h - platSize[1] + 20
 
 
-                ## Detecing if the player is on top of a platform
+##                ## Detecing if the player is on top of a platform
+##                for platform in initialPlatform:
+##                    if  yPos >= (h - platform[1] + 20) and startFloor:
+##                        yPos = h - platSize[1] + 20
+##                        canJump = True
+##
+##                    if detectCollisions(h, xPos, yPos, playerSize[0], platform[0], platform[1], platSize[0], platSize[1], gravVel, startFloor):# x1,y1,w1,x2,y2,w2, yVel
+##            ##            if yPos <= h - platSize[1] + 20 and yPos + gravVel:
+##            ##                yPos = h - platSize[1] + 20
+####                        if onFloor and not jumpping:
+####                            yPos = h - platSize[1] + 20
+##                        onGround = True
+##                        yPos = platform[1]
+##                        break
                 for platform in initialPlatform:
-                    if detectCollisions(h, xPos, yPos, playerSize[0], platform[0], platform[1], platSize[0], platSize[1], gravVel, startFloor):# x1,y1,w1,x2,y2,w2, yVel
-            ##            if yPos <= h - platSize[1] + 20 and yPos + gravVel:
-            ##                yPos = h - platSize[1] + 20
-##                        if onFloor and not jumpping:
-##                            yPos = h - platSize[1] + 20
-                        onGround = True
-                        if  yPos <= h -platSize[1] + 20 and yPos + gravVel >= h - platSize[1] + 20 and startFloor:
-                            yPos = h - platSize[1] + 20
-
-                        else:
+                    # ### detecting if the player is on the platform
+                    if detectCollisions(h, xPos, yPos, playerSize[0], platform[0], platform[1], platSize[0], platSize[1], gravVel, startFloor):
+                        if yPos != platform[1] and not jumpping:
                             yPos = platform[1]
-                        break
+                            onGround = True
 
 
+                    elif yPos >= (h - platSize[1] + 20) and startFloor:
+                        yPos = h - platSize[1] + 20
+                        onGround = True
+
+##                    else:
+##                        onGround = False
+
+
+                    elif yPos >= (h - platSize[1] + 20) and not startFloor:pass
+                ##        screen.fill(WHITE)
+                ##        pygame.display.flip()
+                ##        pygame.time.wait(500)
+                ##        screen.fill(RED)
+                ##        pygame.display.flip()
+                ##        pygame.time.wait(400)
+                ##        screen.fill(WHITE)
+                ##        pygame.display.flip()
+                ##        pygame.time.wait(300)
+                ##        for i in range(6):
+                ##            screen.fill(RED)
+                ##            pygame.display.flip()
+                ##            pygame.time.wait(200)
+                ##            screen.fill(WHITE)
+                ##            pygame.display.flip()
+                ##            pygame.time.wait(200)
+                ##
+                ##        pointTxt = font2.render("YOU LOSE!", True, BLACK)
+                ##        screen.blit(pointTxt, (0, int(h/2)))
+                ##        pygame.display.flip()
+                ##        pygame.time.wait(3000)
+
+##                        gameStart = False
+##                        running = False
+##                    else:
+##                        onGround = False
                 pygame.display.flip()
-
-                if yPos > h and not startFloor:
-            ##        screen.fill(WHITE)
-            ##        pygame.display.flip()
-            ##        pygame.time.wait(500)
-            ##        screen.fill(RED)
-            ##        pygame.display.flip()
-            ##        pygame.time.wait(400)
-            ##        screen.fill(WHITE)
-            ##        pygame.display.flip()
-            ##        pygame.time.wait(300)
-            ##        for i in range(6):
-            ##            screen.fill(RED)
-            ##            pygame.display.flip()
-            ##            pygame.time.wait(200)
-            ##            screen.fill(WHITE)
-            ##            pygame.display.flip()
-            ##            pygame.time.wait(200)
-            ##
-            ##        pointTxt = font2.render("YOU LOSE!", True, BLACK)
-            ##        screen.blit(pointTxt, (0, int(h/2)))
-            ##        pygame.display.flip()
-            ##        pygame.time.wait(3000)
-
-
-                    running = False
 
 
                 CLOCK.tick(FPS)

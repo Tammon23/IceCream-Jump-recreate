@@ -23,7 +23,8 @@ sMainButtonClr = sButtonClr
 sMainButtonClr2 = sButtonClr
 
 # Pictures used in program
-platformPic = pygame.image.load("Singleplatform.png").convert_alpha()
+unscaled_platformPic = pygame.image.load("Singleplatform.png").convert_alpha()
+platformPic = pygame.transform.scale(unscaled_platformPic, (100, 51))
 playerR = pygame.image.load("playerLRight.png").convert_alpha()
 playerL = pygame.image.load("playerLLeft.png").convert_alpha()
 playerD = pygame.image.load("playerLDead.png").convert_alpha()
@@ -32,14 +33,14 @@ floorImg = pygame.image.load("floor.png").convert_alpha()
 bgimg = pygame.image.load("bg.jpg").convert_alpha()
 player = playerU
 
-
-
 # ### getting sizes of each picture drawn
 platSize = platformPic.get_rect().size
 playerSize = player.get_rect().size
 
 #Scaling the image down to something we can use
 scale_floorImg = pygame.transform.scale(floorImg, (w, platSize[1]))
+
+
 
 points = 0
 trackY = h
@@ -63,7 +64,7 @@ help8 = font5.render("Enjoy!", True, BLACK)
 
 
 #Movement varibles
-maxJumpHeight = 120
+maxJumpHeight = 220
 
 xPos = 100#int(w/2)
 yPos = h - platSize[1] + 20
