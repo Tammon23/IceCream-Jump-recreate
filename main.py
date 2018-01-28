@@ -1,3 +1,13 @@
+#-------------------------------------------------------------------------------
+# Name:        main.py
+# Purpose:     To create a game for my cs FSE
+#
+# Author:      Ikenna Uduh, 35300999
+#
+# Created:     15-12-2017
+#-------------------------------------------------------------------------------
+
+
 import pygame
 from pygame.locals import *
 from settings import *
@@ -37,22 +47,23 @@ while running:
         sMainButtonClr = sButtonClrPressed
         if pygame.mouse.get_pressed()[0]:
             gameStart = True
-            #######################################################################  Game logic
+               # #####################################################################  Game logic
             # ### creating the list  of values holding all of the platform's x and y location data
             initialPlatform = gen_start_platforms(150, platSize,size, 80)
-            print("Number of platforms seen:",len(initialPlatform), initialPlatform )
+            #print("Number of platforms seen:",len(initialPlatform), initialPlatform )
 
-
+            pygame.mixer.music.play(-1)
             # Let's start the game
             while gameStart:
                 pygame.event.pump()
                 k = pygame.key.get_pressed()
                 if k[pygame.K_q] or k[pygame.K_ESCAPE]:
                     break
+                #pygame.mixer.music.play(-1)
 
                 ## Calculating the points, based on movements
                 if trackY > yPos:
-                    points += abs(trackY - yPos)
+                    points += trackY - yPos
                     trackY = yPos
 
                 ##Blitting images to to the screen
@@ -69,6 +80,9 @@ while running:
 
                 pointTxt = font1.render("Total Score:"+ str(points), True, BLACK)
                 screen.blit(pointTxt, (0, 0))
+
+                stageTxt = font1.render("Stage:"+ str(stage), True, BLACK)
+                screen.blit(stageTxt, (int(w/2), 0))
 
 
                 ##Checking to see if certain keys are pressed and preforming tasks if so
@@ -91,10 +105,9 @@ while running:
                     jumpping = False
                     jumpCounter = 0
 
-                #print("for gravity on false, onground: ", onGround, "Jumppin on false:", jumpping, "SRT FLOOR STATE", startFloor)
-                #print("jump:", jumpping, "onfloor:", onGround, yPos, jumpCounter)
                 ## Implimenting Gravity
 
+                #if (not onGround or not onPlat) and not jumpping:
                 if not onGround and not jumpping:
                     if not startFloor:
                         yPos += gravVel
@@ -114,70 +127,58 @@ while running:
                 if yPos <= 0:
                     yPos = h
                     startFloor = False
-                    initialPlatform = gen_start_platforms(0, platSize,size, 80)
-                    trackY = h - platSize[1] + 20
+                    jumpCounter = 0
+                    initialPlatform = gen_start_platforms(0, platSize,size, 80, (xPos, h-platSize[1]))
+                    trackY = h# - platSize[1] + 20
+                    stage += 1
+                    enemyVel = int(stage/2)
+                    enemyX = 0
+                    enemyY = random.randint(0, int(h/2))
 
+                # Adding enemies in to spice some things up
+                if stage > 1:
+                    addEnemy(screen, enemyX, enemyY, scale_enemy ,(xPos, yPos-playerSize[1], playerSize[0], playerSize[1]))
+                    if addEnemy(screen, enemyX, enemyY, scale_enemy ,(xPos, yPos-playerSize[1], playerSize[0], playerSize[1])):
+                        pygame.mixer.music.stop()
+                        pygame.mixer.Sound.play(crash_sound)
+                        lossScreen = True
+                        gameStart = False
 
-##                ## Detecing if the player is on top of a platform
-##                for platform in initialPlatform:
-##                    if  yPos >= (h - platform[1] + 20) and startFloor:
-##                        yPos = h - platSize[1] + 20
-##                        canJump = True
-##
-##                    if detectCollisions(h, xPos, yPos, playerSize[0], platform[0], platform[1], platSize[0], platSize[1], gravVel, startFloor):# x1,y1,w1,x2,y2,w2, yVel
-##            ##            if yPos <= h - platSize[1] + 20 and yPos + gravVel:
-##            ##                yPos = h - platSize[1] + 20
-####                        if onFloor and not jumpping:
-####                            yPos = h - platSize[1] + 20
-##                        onGround = True
-##                        yPos = platform[1]
-##                        break
+                    if enemyX <= 0:
+                        enemyX = 1
+                        enemyVel *= -1
+                        scale_enemy = pygame.transform.flip(scale_enemy,True,False)
+
+                    elif enemyX + enemySize[0] >= w:
+                        enemyX = w - enemySize[0] - 1
+                        enemyVel *= -1
+                        scale_enemy = pygame.transform.flip(scale_enemy,True,False)
+
+                    enemyX += enemyVel
+
+                ## Detecing if the player is on top of a platform
                 for platform in initialPlatform:
                     # ### detecting if the player is on the platform
                     if detectCollisions(h, xPos, yPos, playerSize[0], platform[0], platform[1], platSize[0], platSize[1], gravVel, startFloor):
-                        if yPos != platform[1] and not jumpping:
+                        if not jumpping:
                             yPos = platform[1]
                             onGround = True
+                            break
 
 
                     elif yPos >= (h - platSize[1] + 20) and startFloor:
                         yPos = h - platSize[1] + 20
                         onGround = True
 
-##                    else:
-##                        onGround = False
 
+                    elif yPos >= h and trackY < h-platSize[1]:# if the players falls through the bottom of the screen, if so they lose :D
+                        lossScreen = True
+                        gameStart = False
 
-                    elif yPos >= (h - platSize[1] + 20) and not startFloor:pass
-                ##        screen.fill(WHITE)
-                ##        pygame.display.flip()
-                ##        pygame.time.wait(500)
-                ##        screen.fill(RED)
-                ##        pygame.display.flip()
-                ##        pygame.time.wait(400)
-                ##        screen.fill(WHITE)
-                ##        pygame.display.flip()
-                ##        pygame.time.wait(300)
-                ##        for i in range(6):
-                ##            screen.fill(RED)
-                ##            pygame.display.flip()
-                ##            pygame.time.wait(200)
-                ##            screen.fill(WHITE)
-                ##            pygame.display.flip()
-                ##            pygame.time.wait(200)
-                ##
-                ##        pointTxt = font2.render("YOU LOSE!", True, BLACK)
-                ##        screen.blit(pointTxt, (0, int(h/2)))
-                ##        pygame.display.flip()
-                ##        pygame.time.wait(3000)
+                    elif not jumpping :
+                            onGround = False
 
-##                        gameStart = False
-##                        running = False
-##                    else:
-##                        onGround = False
                 pygame.display.flip()
-
-
                 CLOCK.tick(FPS)
 
 
@@ -222,9 +223,56 @@ while running:
     else:
         sMainButtonClr2 = sButtonClr
 
+    #if the player lost display the loss screen
+    while lossScreen:
+        pygame.event.pump()
+        k = pygame.key.get_pressed()
+        if k[pygame.K_q] or k[pygame.K_ESCAPE]:
+            break
 
+        #start Splash screen
+        screen.fill(sBackground)
+        line1 = font2.render("You Lose!", True, BLACK)
+        line2 = font5.render("Your final score was: " + str(points), True, BLACK)
+        screen.blit(line1, (90, 100))
+        screen.blit(line2, (90, 210))
+
+        line3 = font1.render("- By Ikenna Uduh", True, BLACK)
+        screen.blit(line3, (w - 150, h - 25))
+
+        x,y = pygame.mouse.get_pos()
+
+        pygame.draw.circle(screen, sPAgainButtonClr, (int(w/2), int(h/2 + 50)), RAD3)
+        pygame.draw.circle(screen, BLACK, (int(w/2), int(h/2 + 50)), RAD3, 10)
+        line3 = font3.render("PLAY", True, BLACK)
+        line4 = font3.render("AGAIN", True, BLACK)
+        screen.blit(line3, (int(w/2) - 120, 400))
+        screen.blit(line4, (int(w/2) - 120, 500))
+
+
+        # Checking to see if the clicked mouse is pressing the PLAY or HELP buttons
+        if checkInCir(int(w/2), int(h/2 + 50), y, x, RAD3):
+            sPAgainButtonClr = sButtonClrPressed
+            if pygame.mouse.get_pressed()[0]:
+                gameStart = True
+                lossScreen = False
+                # Reseting all starting parameters
+                scale_enemy = pygame.transform.flip(pygame.transform.scale(enemy, (platSize)),True,False)
+                player = playerU
+                xPos = int(w/2)
+                yPos = h - platSize[1] + 20
+                onGround = True
+                jumpping = False
+                startFloor = True
+                trackY = yPos
+                stage = 1
+                points = 0
+                enemyVel = 1
+                pygame.mixer.music.unpause()
+        else:
+            sPAgainButtonClr = sButtonClr
+
+
+        pygame.display.flip()
     pygame.display.flip()
 pygame.quit()
-
-
-
